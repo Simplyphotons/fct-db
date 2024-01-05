@@ -8,31 +8,31 @@ CREATE TABLE IF NOT EXISTS users (
     is_supervisor BOOLEAN
 );
 
--- Creating the 'projectTable' table
-CREATE TABLE IF NOT EXISTS projectTable (
+-- Creating the 'projects' table
+CREATE TABLE IF NOT EXISTS projects (
     project_id INTEGER PRIMARY KEY,
     project_name VARCHAR,
-    student_id INTEGER REFERENCES users(username),
-    supervisor_id INTEGER REFERENCES users(username),
+    student_id VARCHAR,
+    supervisor_id VARCHAR,
     created_at TIMESTAMP
 );
 
 -- Creating the 'ganttItem' table
-CREATE TABLE IF NOT EXISTS ganttItem (
+CREATE TABLE IF NOT EXISTS gantt_items (
     item_id INTEGER PRIMARY KEY,
-    project_id INTEGER REFERENCES projectTable(project_id),
+    project_id INTEGER,
     start_date DATE,
     end_date DATE,
     description VARCHAR,
-    links VARCHAR[],
-    feedback VARCHAR[]
+    links VARCHAR,
+    feedback VARCHAR
 );
 
 -- Creating the 'ticket' table
-CREATE TABLE IF NOT EXISTS ticket (
+CREATE TABLE IF NOT EXISTS tickets (
     ticket_id INTEGER PRIMARY KEY,
-    student_id INTEGER REFERENCES users(username),
-    supervisor_id INTEGER REFERENCES users(username),
+    student_id VARCHAR,
+    supervisor_id VARCHAR,
     questionShort VARCHAR,
     questionLong VARCHAR,
     answer VARCHAR,
@@ -40,27 +40,27 @@ CREATE TABLE IF NOT EXISTS ticket (
 );
 
 -- Creating the foreign key relationships
-ALTER TABLE ganttItem
-ADD CONSTRAINT fk_ganttItem_projectTable
-FOREIGN KEY (project_id) REFERENCES projectTable(project_id);
+ALTER TABLE gantt_items
+ADD CONSTRAINT fk_gantt_items_projectTable
+FOREIGN KEY (project_id) REFERENCES projects(project_id);
 
-ALTER TABLE projectTable
-ADD CONSTRAINT fk_projectTable_student
+ALTER TABLE projects
+ADD CONSTRAINT fk_projects_student
 FOREIGN KEY (student_id) REFERENCES users(username);
 
-ALTER TABLE projectTable
-ADD CONSTRAINT fk_projectTable_supervisor
+ALTER TABLE projects
+ADD CONSTRAINT fk_projects_supervisor
 FOREIGN KEY (supervisor_id) REFERENCES users(username);
 
-ALTER TABLE ticket
-ADD CONSTRAINT fk_ticket_student
+ALTER TABLE tickets
+ADD CONSTRAINT fk_tickets_student
 FOREIGN KEY (student_id) REFERENCES users(username);
 
-ALTER TABLE ticket
-ADD CONSTRAINT fk_ticket_supervisor
+ALTER TABLE tickets
+ADD CONSTRAINT fk_tickets_supervisor
 FOREIGN KEY (supervisor_id) REFERENCES users(username);
 
---rollback DROP TABLE IF EXISTS ticket;
---rollback DROP TABLE IF EXISTS ganttItem;
---rollback DROP TABLE IF EXISTS projectTable;
+--rollback DROP TABLE IF EXISTS tickets;
+--rollback DROP TABLE IF EXISTS gantt_items;
+--rollback DROP TABLE IF EXISTS projects;
 --rollback DROP TABLE IF EXISTS users;
