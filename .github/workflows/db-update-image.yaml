@@ -1,0 +1,72 @@
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+name: Build Database Update Docker Image and Push it to Docker Hub
+
+jobs:
+  deploy:
+    name: Build And Push
+    env:
+      IMAGE_NAME: simplyphotons/fct-db-udpate
+      IMAGE_TAG: 1.0.${{ github.run_number }}
+      LIQUIBASE_VERSION: 4.25.1
+      POSGRES_VERSION: 42.7.1
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Conditional
+        if: github.event.release.tag_name != null
+        run: |
+          echo "IMAGE_TAG=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        id: hub-docker-login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build docker image
+        id: build-image
+        run: |
+          DOCKER_BUILDKIT=1 docker build --progress=plain --no-cache -t test-db --target deploy --build-arg LIQUIBASE_VERSION=$LIQUIBASE_VERSION --build-arg POSTGRES_VERSION=$POSGRES_VERSION .
+
+      - name: Scan image
+        id: scan
+        continue-on-error: true
+        uses: anchore/scan-action@v3
+        with:
+          image: "test-db"
+          fail-build: false
+          severity-cutoff: high
+          only-fixed: true
+
+      - name: Inspect action SARIF report
+        run: cat ${{ steps.scan.outputs.sarif }}
+
+      #    - name: upload Anchore scan SARIF report
+      #      uses: github/codeql-action/upload-sarif@v2
+      #      with:
+      #        sarif_file: ${{ steps.scan.outputs.sarif }}
+
+      - run: exit 1
+        if: ${{steps.scan.outcome == 'failure'}}
+
+      - name: Tag and push image to Docker Hub
+        id: push-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          docker tag test-db $IMAGE_NAME:$IMAGE_TAG
+          docker tag $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME
+          docker push $IMAGE_NAME:$IMAGE_TAG
+          docker push $IMAGE_NAME
+          echo "::set-output name=image::$IMAGE_NAME:$IMAGE_TAG"

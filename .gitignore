@@ -1,0 +1,5 @@
+.idea
+*.iml
+postgresql.jar
+ssl
+liquibase.properties.uat

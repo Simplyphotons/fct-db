@@ -1,0 +1,6 @@
+changeLogFile=deploy.xml
+classpath=postgresql-42.2.2.jar
+driver=org.postgresql.Driver
+url=jdbc:postgresql://localhost/postgres
+username=deploy
+password=password
