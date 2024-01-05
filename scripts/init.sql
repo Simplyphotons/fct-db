@@ -3,13 +3,13 @@
 --changeset  igor.kolomiyets:create_schema
 --comment: Creating initial schema
 -- Creating the 'users' table
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     username VARCHAR PRIMARY KEY,
     is_supervisor BOOLEAN
 );
 
 -- Creating the 'projectTable' table
-CREATE TABLE projectTable (
+CREATE TABLE IF NOT EXISTS projectTable (
     project_id INTEGER PRIMARY KEY,
     project_name VARCHAR,
     student_id INTEGER REFERENCES users(username),
@@ -18,7 +18,7 @@ CREATE TABLE projectTable (
 );
 
 -- Creating the 'ganttItem' table
-CREATE TABLE ganttItem (
+CREATE TABLE IF NOT EXISTS ganttItem (
     item_id INTEGER PRIMARY KEY,
     project_id INTEGER REFERENCES projectTable(project_id),
     start_date DATE,
@@ -29,7 +29,7 @@ CREATE TABLE ganttItem (
 );
 
 -- Creating the 'ticket' table
-CREATE TABLE ticket (
+CREATE TABLE IF NOT EXISTS ticket (
     ticket_id INTEGER PRIMARY KEY,
     student_id INTEGER REFERENCES users(username),
     supervisor_id INTEGER REFERENCES users(username),
@@ -60,5 +60,7 @@ ALTER TABLE ticket
 ADD CONSTRAINT fk_ticket_supervisor
 FOREIGN KEY (supervisor_id) REFERENCES users(username);
 
---rollback DROP SEQUENCE IF EXISTS TEST_ID_SEQ;
---rollback DROP TABLE IF EXISTS TEST;
+--rollback DROP TABLE IF EXISTS ticket;
+--rollback DROP TABLE IF EXISTS ganttItem;
+--rollback DROP TABLE IF EXISTS projectTable;
+--rollback DROP TABLE IF EXISTS users;
