@@ -6,4 +6,6 @@
     <include file="scripts/init.sql" relativeToChangelogFile="true" />
 <!--    <include file="scripts/data/data.sql" relativeToChangelogFile="true" />-->
 <!--    <include file="scripts/data/test_data.sql" relativeToChangelogFile="true" />-->
+    <include file="scripts/patches/patch-0.1.sql" relativeToChangelogFile="true" />
+
 </databaseChangeLog>
