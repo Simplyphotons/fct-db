@@ -4,7 +4,7 @@
 --comment: Creating initial schema
 -- Creating the 'users' table
 CREATE TABLE IF NOT EXISTS users (
-    username VARCHAR PRIMARY KEY,
+    username VARCHAR PRIMARY KEY, --username is userID
     is_supervisor BOOLEAN
 );
 
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS projects (
     created_at TIMESTAMP
 );
 
--- Creating the 'ganttItem' table
+-- Creating the 'ganttItems' table
 CREATE TABLE IF NOT EXISTS gantt_items (
     item_id INTEGER PRIMARY KEY,
     project_id INTEGER,
@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS tickets (
     answer VARCHAR,
     is_answered BOOLEAN
 );
+
 
 -- Creating the foreign key relationships
 ALTER TABLE gantt_items

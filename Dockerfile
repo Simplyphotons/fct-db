@@ -1,4 +1,4 @@
-FROM postgres:16.1 AS deploy
+FROM postgres:16.2 AS deploy
 
 ARG LIQUIBASE_VERSION=4.3.1
 ARG POSTGRES_VERSION=42.2.19
@@ -50,7 +50,7 @@ RUN ls -l && /app/init-db.sh postgres \
     && pg_dumpall > /app/backup.sql \
     && pg_ctl stop
 
-FROM postgres:16.1
+FROM postgres:16.2
 
 ENV POSTGRES_PASSWORD Password1
 
