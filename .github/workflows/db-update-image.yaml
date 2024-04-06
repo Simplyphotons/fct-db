@@ -37,7 +37,7 @@ jobs:
       - name: Build docker image
         id: build-image
         run: |
-          DOCKER_BUILDKIT=1 docker build --progress=plain --no-cache -t test-db --target deploy --build-arg LIQUIBASE_VERSION=$LIQUIBASE_VERSION --build-arg POSTGRES_VERSION=$POSGRES_VERSION .
+          DOCKER_BUILDKIT=1 docker build --progress=plain --no-cache -t test-db --target deploy --build-arg LIQUIBASE_VERSION=$LIQUIBASE_VERSION --build-arg POSTGRES_VERSION=$POSTGRES_VERSION .
 
       - name: Scan image
         id: scan
