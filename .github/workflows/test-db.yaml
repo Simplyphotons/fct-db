@@ -11,7 +11,7 @@ jobs:
       IMAGE_NAME: simplyphotons/fct-db
       IMAGE_TAG: 1.0.${{ github.run_number }}
       LIQUIBASE_VERSION: 4.27.0
-      POSGRES_VERSION: 42.7.3
+      POSTGRES_VERSION: 42.7.3
     runs-on: ubuntu-latest
 
     steps:
